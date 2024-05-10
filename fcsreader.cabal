@@ -68,12 +68,15 @@ library
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.17.2.1
-    		    , bytestring
+    build-depends:    base 
+                    , parsec
+		    , bytestring
 		    , text
 		    , process
 		    , directory
 		    , time
+                    , filepath
+                    , text 
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -96,8 +99,9 @@ executable fcsreader
 
     -- Other library packages from which modules are imported.
     build-depends:
-        base ^>=4.17.2.1,
-        fcsreader
+        base 
+        , parsec
+        , fcsreader
 
     -- Directories containing source files.
     hs-source-dirs:   app
@@ -129,5 +133,6 @@ test-suite fcsreader-test
 
     -- Test dependencies.
     build-depends:
-        base ^>=4.17.2.1,
-        fcsreader
+        base
+        , parsec
+        , fcsreader
