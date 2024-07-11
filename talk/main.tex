@@ -21,7 +21,7 @@ breaklines=true
     \centering
     \includegraphics[width=0.45\textwidth]{./images/NJ030_MACE-binding.pdf}
     \includegraphics[width=0.45\textwidth]{./images/NJ017_gates.pdf}
-    \caption{Unrelated examples: gates on fluorescent channels and
+    \caption{Examples: gates on fluorescent channels and
       example gating scheme.}
   \end{figure}
 \end{frame}
@@ -55,6 +55,19 @@ recompute(gs)
 \begin{lstlisting}
 FCS3.0         256    1545    1792  202456       0       0 
 \end{lstlisting}
+\begin{quotation}
+  The primary purpose of the HEADER segment is to describe the location
+of the other segments in the data set. The HEADER segment begins at
+byte offset zero from the beginning of the data set.  The first six
+bytes in the HEADER segment comprise the version identifier
+(FCS3.1). Note that there is no space character between the FCS and
+the 3.1 in the identifier. The next 4 bytes (6 - 9) are occupied by
+space characters (ASCII 32). Following the identifier are at least
+three pairs of ASCII-encoded integers indicating the byte offsets for
+the start and end (=last byte of) of the primary TEXT segment, the
+DATA segment, and the ANALYSIS segment, respectively.
+\end{quotation}
+\cite{parks2008data}
 \end{frame}
 
 \begin{frame}[fragile]
