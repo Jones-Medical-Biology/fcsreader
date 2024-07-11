@@ -66,3 +66,6 @@ data FcsData30 = FcsData30 { -- punning
 parse x:xs |
   x == "^L" = parse xs
 -}
+
+--headerParser :: a -> b
+
