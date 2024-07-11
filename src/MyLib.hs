@@ -6,8 +6,17 @@ import System.FilePath
 import Text.ParserCombinators.Parsec
 import Data.Text
 
+import Fcs30
+
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
+
+-- parseFcs :: FcsFile -> Either ParseError (GenParser Char st [String]) -- not sure about signature
+-- parseFcs x = case fcsVersion of
+--   "FCS3.0" -> parseFcs30
+--   "FCS3.1" -> parseFcs31
+--   "FCS3.2" -> parseFcs30
+--   _ -> Error
 
 runHCat :: IO ()
 runHCat = handleArgs >>= displayMessage

@@ -79,8 +79,8 @@ recompute(gs)
   Here a condensed paraphrase of the header specification:\todo[inline]{Condense to fit slide}
   \begin{enumerate}
   \item The HEADER segment begins at byte offset zero. 
-  \item The first six bytes in the HEADER segment comprise the version identifier (FCS3.0).
-  \item The next 4 bytes (6 - 9) are occupied by space characters (ASCII 32). 
+  \item The first six bytes in the HEADER segment comprise the version identifier (FCS3.0) [0--5].
+  \item The next 4 bytes [6--9] are occupied by space characters (ASCII 32). 
   \item Following the identifier are at least three pairs of ASCII-encoded integers indicating the byte offsets for the start and end of the
     \begin{enumerate}
     \item primary TEXT segment, 
@@ -97,6 +97,8 @@ recompute(gs)
   \item Each ASCII encoded integer offset is right justified in its 8 byte space. 
   \item Offset locations (bytes):
     \begin{enumerate}
+    \item [0--5] version identifier (FCS3.0)
+    \item [6--9] spaces (ASCII 32)
     \item [10--17] start of the primary TEXT segment
     \item [18--25] end of the primary TEXT segment
     \item [26--33] start of the DATA segment
@@ -111,6 +113,20 @@ recompute(gs)
     the data set follow the ANALYSIS segment offsets.
   \end{enumerate}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Fields}
+  
+  In my sample FCS3.0 file, subsiquent fields are interspersed with
+  ``form feed'' alternating between key and value. Thus, odds are keys
+  and evens are values.
+  
+  \begin{figure}
+    \includegraphics[width=0.9\textwidth]{./images/example_fcs30.png}
+    \caption{Form-feed characters are denoted by ``\string^L''.}
+  \end{figure}
+\end{frame}
+
 \begin{frame}
   \frametitle{FCS3.1}
   \begin{quotation}
