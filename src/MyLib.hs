@@ -1,15 +1,25 @@
-module MyLib (someFunc, runHCat) where
+{-# LANGUAGE FlexibleContexts #-}
+module MyLib (someFunc
+             ,runHCat
+             ,fcsFile) where
 
 import qualified System.Environment as Env
 import Control.Monad
 import System.FilePath
 import Text.ParserCombinators.Parsec
+import Text.Parsec.Prim
 import Data.Text
 
 import Fcs30
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
+
+-- parseFcsFile :: Stream s m Char => ParsecT s u m [[Char]] -> Either ParseError [[Char]]
+-- parseFcsFile = parse fcsFile "(stdin)"
+
+fcsFile :: Stream s m Char => ParsecT s u m [[Char]]
+fcsFile = endBy (many alphaNum) spaces
 
 -- parseFcs :: FcsFile -> Either ParseError (GenParser Char st [String]) -- not sure about signature
 -- parseFcs x = case fcsVersion of

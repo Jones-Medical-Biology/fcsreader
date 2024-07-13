@@ -35,10 +35,10 @@ license:            MIT
 license-file:       LICENSE
 
 -- The package author(s).
-author:             Calypsa M
+author:             Calypsa M, Noah J
 
 -- An email address to which users can send suggestions, bug reports, and patches.
-maintainer:         calypsamccarthy@gmail.com
+maintainer:         noahtjones@gmail.com
 
 -- A copyright notice.
 -- copyright:
@@ -60,12 +60,13 @@ library
 
     -- Modules exported by the library.
     exposed-modules:  MyLib
+                    , Fcs30
 
     -- Modules included in this library but not exported.
     -- other-modules:
 
     -- LANGUAGE extensions used by modules in this package.
-    -- other-extensions:
+    other-extensions: FlexibleContexts
 
     -- Other library packages from which modules are imported.
     build-depends:    base 
