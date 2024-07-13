@@ -6,6 +6,7 @@ pkgs.mkShell {
     ghcid
     stack
     emacs-gtk
+    haskell-language-server
     haskellPackages.cabal-install
     haskellPackages.parsec
     haskellPackages.filepath
