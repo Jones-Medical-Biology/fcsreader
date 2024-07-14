@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts #-}
+--{-# LANGUAGE FlexibleContexts #-}
 import MyLib
 import Fcs30
 import Text.Parsec.Prim
