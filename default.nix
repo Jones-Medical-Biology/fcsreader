@@ -11,4 +11,7 @@ pkgs.mkShell {
     haskellPackages.parsec
     haskellPackages.filepath
   ];
+  shellHook = ''
+    cabal repl
+  '';
 }

@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts #-}
+--{-# LANGUAGE FlexibleContexts #-}
 module MyLib (someFunc
              ,runHCat
              ,fcsFile
