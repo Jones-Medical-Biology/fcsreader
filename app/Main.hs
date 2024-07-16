@@ -1,5 +1,5 @@
 --{-# LANGUAGE FlexibleContexts #-}
-import MyLib
+import Lib
 import Fcs30
 import Text.Parsec.Prim
 import Text.ParserCombinators.Parsec
