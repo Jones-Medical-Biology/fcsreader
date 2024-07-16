@@ -1,48 +1,62 @@
 {-# LANGUAGE FlexibleContexts #-}
-module Lib (runHCat
-             ,fcsFile
-             ) where
+module Lib (parseFcs
+           ,fcsFile
+           ) where
 
-import qualified System.Environment as Env
-import Control.Monad
-import System.FilePath
-import Text.ParserCombinators.Parsec
-import Text.Parsec.Prim
-import Data.Text
-import Fcs30
+-- import qualified System.Environment as Env
+-- import Control.Monad
+-- import System.FilePath
+import qualified Text.ParserCombinators.Parsec as Comb
+import Text.Parsec.Prim ( Stream, ParsecT )
+import qualified Data.Text as T
+import Data.Functor.Identity ( Identity )
 
--- parseFcsFile :: Stream s m Char => ParsecT s u m [[Char]] -> Either ParseError [[Char]]
--- parseFcsFile = parse fcsFile "(stdin)"
+dropLeadingSpaces = Prelude.dropWhile (' ' ==)
 
-fcsFile :: Stream s m Char => ParsecT s u m [[Char]]
-fcsFile = endBy (many alphaNum) spaces
+-- parse (Comb.count 8 (oneOf " 0123456789") >>= char 'a') "na" "     256"
+-- parse (count 8 (many space <|> many Text.ParserCombinators.Parsec.digit)) "na" "     256"
+-- dropLeadingSpaces <$> parse (string "FCS3.0" >> (Text.ParserCombinators.Parsec.count 4 space >> (Text.ParserCombinators.Parsec.count 8 (oneOf " 0123456789")))) "na" a
+-- parse (choice [(string "FCS3.0" >> (Text.ParserCombinators.Parsec.count 4 space >> (Text.ParserCombinators.Parsec.count 8 (oneOf " 0123456789")))), string "FCS3.1", string "FCS3.2"]) "na" a
+fcs30 = do
+  versionid <- string "FCS3.0"
+  count 4 space
+  textstart <- count 8 (oneOf " 0123456789")
+  textend <- count 8
+  datastart <- count 8
+  dataend <- count 8
+  analysisstart <- count 8
+  analysisend <- count 8
+  result <- many segment
+  eof
+  return result
 
--- parseFcs :: FcsFile -> Either ParseError (GenParser Char st [String]) -- not sure about signature
+fcsFile = do
+  c <- choice [fcs30
+              ,string "FCS3.1"
+              ,string "FCS3.2"]
+    return c
+
+fcs30 = do
+  string "FCS3.0"
+  count 4 space
+  count 8 (oneOf " 0123456789")
+  
+fcsFile = endBy body eof
+body = endBy line eol
+line = sepBy entry (char '\f')
+entry = many (noneOf "\f\r\n") 
+
+feedforward :: Stream s m Char => ParsecT s u m Char
+feedforward = char '\f'
+
+parseFcs :: String -> Either ParseError [[String]]
+parseFcs = parse fcsFile "(unknown)"
 -- parseFcs x = case fcsVersion of
 --   "FCS3.0" -> parseFcs30
 --   "FCS3.1" -> parseFcs31
 --   "FCS3.2" -> parseFcs30
 --   _ -> Error
 
-runHCat :: IO ()
-runHCat = handleArgs >>= displayMessage
-  where
-   displayMessage parsedArgument =
-    case parsedArgument of
-     Left errMessage ->
-      putStrLn $ "Error: " <> errMessage
-     Right filename ->
-      readFile filename >>= putStrLn
-
-handleArgs :: IO (Either String FilePath)
-handleArgs =
-  parseArgs <$> Env.getArgs
-  where
-   parseArgs argumentList =
-    case argumentList of
-     [fname] -> Right fname
-     [] -> Left "Error: No arguments provided!"
-     _ -> Left "garbage detected"
 
 data FcsData30 = FcsData30 { -- punning
   beginstext :: Int
