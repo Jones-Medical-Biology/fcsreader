@@ -11,24 +11,28 @@ import Text.Parsec.Prim ( Stream, ParsecT )
 import qualified Data.Text as T
 import Data.Functor.Identity ( Identity )
 
-dropLeadingSpaces = Prelude.dropWhile (' ' ==)
-
 -- parse (Comb.count 8 (oneOf " 0123456789") >>= char 'a') "na" "     256"
 -- parse (count 8 (many space <|> many Text.ParserCombinators.Parsec.digit)) "na" "     256"
 -- dropLeadingSpaces <$> parse (string "FCS3.0" >> (Text.ParserCombinators.Parsec.count 4 space >> (Text.ParserCombinators.Parsec.count 8 (oneOf " 0123456789")))) "na" a
 -- parse (choice [(string "FCS3.0" >> (Text.ParserCombinators.Parsec.count 4 space >> (Text.ParserCombinators.Parsec.count 8 (oneOf " 0123456789")))), string "FCS3.1", string "FCS3.2"]) "na" a
+
+dropLeadingSpaces = Prelude.dropWhile (' ' ==)
+toInt x = read x :: Int
+byteIndexParse x = dropLeadingSpaces <$> count x (oneOf " 0123456789")
+
 fcs30 = do
   versionid <- string "FCS3.0"
   count 4 space
-  textstart <- count 8 (oneOf " 0123456789")
-  textend <- count 8
-  datastart <- count 8
-  dataend <- count 8
-  analysisstart <- count 8
-  analysisend <- count 8
-  result <- many segment
+  textstart <- byteIndexParse 8
+  textend <- byteIndexParse 8
+  datastart <- byteIndexParse 8
+  dataend <- byteIndexParse 8
+  analysisstart <- byteIndexParse 8
+  analysisend <- byteIndexParse 8
+  -- result <- many segment
   eof
-  return result
+  print versionid
+  return versionid
 
 fcsFile = do
   c <- choice [fcs30
