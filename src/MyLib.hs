@@ -1,11 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
-module MyLib (someFunc
-             ,runHCat
+module MyLib (runHCat
              ,fcsFile
-             ,primes
-             ,primes'
-             ,primesrev
-             ,primesrev'
              ) where
 
 import qualified System.Environment as Env

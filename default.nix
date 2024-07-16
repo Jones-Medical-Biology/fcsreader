@@ -6,6 +6,7 @@ pkgs.mkShell {
     ghcid
     stack
     emacs-gtk
+    direnv
     haskell-language-server
     haskellPackages.cabal-install
     haskellPackages.parsec
