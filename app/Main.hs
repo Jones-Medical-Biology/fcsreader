@@ -12,7 +12,7 @@ main = do
   case parse fcsFile "(stdin)" c of
     Left e -> do putStrLn "Error parsing input:"
                  print e
-    Right r -> mapM_ print r
+    Right r -> print r -- mapM_ print r
 
 -- handleArgs :: IO (Either String (IO String))
 -- handleArgs =

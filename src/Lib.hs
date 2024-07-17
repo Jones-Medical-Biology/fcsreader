@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE StrictData #-}
 module Lib (parseFcs
            ,fcsFile
            ) where
@@ -6,9 +7,10 @@ module Lib (parseFcs
 -- import qualified System.Environment as Env
 -- import Control.Monad
 -- import System.FilePath
-import qualified Text.ParserCombinators.Parsec as Comb
+import Text.ParserCombinators.Parsec
 import Text.Parsec.Prim ( Stream, ParsecT )
 import qualified Data.Text as T
+import Data.Text (Text)
 import Data.Functor.Identity ( Identity )
 
 -- parse (Comb.count 8 (oneOf " 0123456789") >>= char 'a') "na" "     256"
@@ -30,30 +32,53 @@ fcs30 = do
   analysisstart <- byteIndexParse 8
   analysisend <- byteIndexParse 8
   -- result <- many segment
+  many anyChar
   eof
-  print versionid
-  return versionid
+  return FcsOut { versionid = Just (versionid :: [Char] )
+                , textstart = Just textstart
+                , textend = Just textend }
 
-fcsFile = do
-  c <- choice [fcs30
-              ,string "FCS3.1"
-              ,string "FCS3.2"]
-    return c
+fcs31 = do
+  versionid <- string "FCS3.1"
+  many anyChar
+  eof
+  return FcsOut { versionid = Just (versionid :: [Char] )
+                , textstart = Nothing
+                , textend = Nothing }
 
-fcs30 = do
-  string "FCS3.0"
-  count 4 space
-  count 8 (oneOf " 0123456789")
+fcs32 = do
+  versionid <- string "FCS3.2"
+  many anyChar
+  eof
+  return FcsOut { versionid = Just (versionid :: [Char] )
+                , textstart = Nothing
+                , textend = Nothing }
+
+
+fcsFile = do choice [ fcs30
+                    , fcs31
+                    , fcs32
+                    ]
+
+-- fcs30 = do
+--   string "FCS3.0"
+--   count 4 space
+--   count 8 (oneOf " 0123456789")
   
-fcsFile = endBy body eof
-body = endBy line eol
-line = sepBy entry (char '\f')
-entry = many (noneOf "\f\r\n") 
+-- fcsFile = endBy body eof
+-- body = endBy line eol
+-- line = sepBy entry (char '\f')
+-- entry = many (noneOf "\f\r\n") 
 
 feedforward :: Stream s m Char => ParsecT s u m Char
 feedforward = char '\f'
 
-parseFcs :: String -> Either ParseError [[String]]
+data FcsOut = FcsOut { versionid  :: Maybe [Char]
+                     , textstart  :: Maybe [Char]
+                     , textend    :: Maybe [Char]
+                     } deriving Show
+
+parseFcs :: String -> Either ParseError FcsOut
 parseFcs = parse fcsFile "(unknown)"
 -- parseFcs x = case fcsVersion of
 --   "FCS3.0" -> parseFcs30
