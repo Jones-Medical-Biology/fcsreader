@@ -8,9 +8,20 @@ module Lib (parseFcs
 -- import Control.Monad
 -- import System.FilePath
 import Text.ParserCombinators.Parsec
-import Text.Parsec.Prim ( Stream, ParsecT )
-import qualified Data.Text as T
-import Data.Text (Text)
+  ( ParseError,
+    parse,
+    many,
+    anyChar,
+    char,
+    oneOf,
+    space,
+    string,
+    choice,
+    count,
+    eof )
+import Text.Parsec.Prim
+  ( Stream, ParsecT )
+import qualified Data.Text as T ( Text )
 import Data.Functor.Identity ( Identity )
 
 -- parse (Comb.count 8 (oneOf " 0123456789") >>= char 'a') "na" "     256"
@@ -31,12 +42,19 @@ fcs30 = do
   dataend <- byteIndexParse 8
   analysisstart <- byteIndexParse 8
   analysisend <- byteIndexParse 8
+  -- junk <- byteIndexParse (textstart - 58) textstart needs to become an integer
+  -- textsegment <- byteIndexParse (textend - textstart) textend needs to become an integer
   -- result <- many segment
   many anyChar
   eof
   return FcsOut { versionid = Just (versionid :: [Char] )
                 , textstart = Just textstart
-                , textend = Just textend }
+                , textend = Just textend
+                -- , datastart = Just datastart
+                -- , dataend = Just dataend
+                -- , analysisstart = Just analysisstart
+                -- , analysisend = Just analysisend
+                }
 
 fcs31 = do
   versionid <- string "FCS3.1"
