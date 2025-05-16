@@ -7,7 +7,7 @@ import System.Environment (getArgs)
 
 main :: IO ()
 main = do
-  setLocaleEncoding char8
+  -- setLocaleEncoding char8
   c <- getContents --handleArgs
   case parse fcsFile "(stdin)" c of
     Left e -> do putStrLn "Error parsing input:"
